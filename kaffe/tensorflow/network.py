@@ -124,17 +124,17 @@ class Network(object):
         # Convolution for a given input and kernel
         convolve = lambda i, k: tf.nn.conv2d(i, k, [1, s_h, s_w, 1], padding=padding)
         with tf.variable_scope(name) as scope:
-            kernel = self.make_var('weights', shape=[k_h, k_w, c_i / group, c_o])
+            kernel = self.make_var('weights', shape=[k_h, k_w, c_i // group, c_o])
             if group == 1:
                 # This is the common-case. Convolve the input without any further complications.
                 output = convolve(input, kernel)
             else:
                 # Split the input into groups and then convolve each of them independently
-                input_groups = tf.split(3, group, input)
-                kernel_groups = tf.split(3, group, kernel)
+                input_groups = tf.split(axis=3, num_or_size_splits=group, value=input)
+                kernel_groups = tf.split(axis=3, num_or_size_splits=group, value=kernel)
                 output_groups = [convolve(i, k) for i, k in zip(input_groups, kernel_groups)]
                 # Concatenate the groups
-                output = tf.concat(3, output_groups)
+                output = tf.concat(axis=3, values=output_groups)
             # Add the biases
             if biased:
                 biases = self.make_var('biases', [c_o])
@@ -177,7 +177,7 @@ class Network(object):
 
     @layer
     def concat(self, inputs, axis, name):
-        return tf.concat(concat_dim=axis, values=inputs, name=name)
+        return tf.concat(axis=axis, values=inputs, name=name)
 
     @layer
     def add(self, inputs, name):
@@ -209,7 +209,7 @@ class Network(object):
             # need to be explicitly squeezed, since they're not broadcast-able
             # in TensorFlow's NHWC ordering (unlike Caffe's NCHW).
             if input_shape[1] == 1 and input_shape[2] == 1:
-                input = tf.squeeze(input, squeeze_dims=[1, 2])
+                input = tf.squeeze(input, axis=[1, 2])
             else:
                 raise ValueError('Rank 2 tensor input expected for softmax!')
         return tf.nn.softmax(input, name=name)

@@ -1,0 +1,61 @@
+--------------------------------------------------------------------------------
+Processing file 'network.py'
+ outputting to 'network.py.tf1.0'
+--------------------------------------------------------------------------------
+
+'network.py' Line 137
+--------------------------------------------------------------------------------
+
+Added keyword 'concat_dim' to reordered function 'tf.concat'
+Added keyword 'values' to reordered function 'tf.concat'
+
+    Old:                 output = tf.concat(3, output_groups)
+                                                              
+    New:                 output = tf.concat(axis=3, values=output_groups)
+                                            ~~~~~   ~~~~~~~               
+
+'network.py' Line 212
+--------------------------------------------------------------------------------
+
+Renamed keyword argument from 'squeeze_dims' to 'axis'
+
+    Old:                 input = tf.squeeze(input, squeeze_dims=[1, 2])
+                                                   ~~~~~~~~~~~~~        
+    New:                 input = tf.squeeze(input, axis=[1, 2])
+                                                   ~~~~~        
+
+'network.py' Line 180
+--------------------------------------------------------------------------------
+
+Renamed keyword argument from 'concat_dim' to 'axis'
+
+    Old:         return tf.concat(concat_dim=axis, values=inputs, name=name)
+                                  ~~~~~~~~~~~                                
+    New:         return tf.concat(axis=axis, values=inputs, name=name)
+                                  ~~~~~                                
+
+'network.py' Line 133
+--------------------------------------------------------------------------------
+
+Added keyword 'axis' to reordered function 'tf.split'
+Added keyword 'num_or_size_splits' to reordered function 'tf.split'
+Added keyword 'value' to reordered function 'tf.split'
+
+    Old:                 input_groups = tf.split(3, group, input)
+                                                                  
+    New:                 input_groups = tf.split(axis=3, num_or_size_splits=group, value=input)
+                                                 ~~~~~   ~~~~~~~~~~~~~~~~~~~       ~~~~~~       
+
+'network.py' Line 134
+--------------------------------------------------------------------------------
+
+Added keyword 'axis' to reordered function 'tf.split'
+Added keyword 'num_or_size_splits' to reordered function 'tf.split'
+Added keyword 'value' to reordered function 'tf.split'
+
+    Old:                 kernel_groups = tf.split(3, group, kernel)
+                                                                    
+    New:                 kernel_groups = tf.split(axis=3, num_or_size_splits=group, value=kernel)
+                                                  ~~~~~   ~~~~~~~~~~~~~~~~~~~       ~~~~~~        
+
+
