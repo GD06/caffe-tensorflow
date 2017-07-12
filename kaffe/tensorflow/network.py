@@ -86,6 +86,10 @@ class Network(object):
         '''Returns the current network output.'''
         return self.terminals[-1]
 
+    def get_layer_output(self, layer_name):
+        '''Return the output of specified layer by layer name'''
+        return self.layers[layer_name]
+
     def get_unique_name(self, prefix):
         '''Returns an index-suffixed unique name for the given prefix.
         This is used for auto-generating layer names based on the type-prefix.
