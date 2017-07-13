@@ -17,6 +17,7 @@ def layer(op):
             layer_input = self.terminals[0]
         else:
             layer_input = list(self.terminals)
+        self.layer_inputs = layer_input
         # Perform the operation and get the output.
         layer_output = op(self, layer_input, *args, **kwargs)
         # Add to layer LUT.
@@ -36,6 +37,8 @@ class Network(object):
         self.inputs = inputs
         # The current list of terminal nodes
         self.terminals = []
+        # The current list of input nodes
+        self.layer_inputs = None
         # Mapping from layer names to layers
         self.layers = dict(inputs)
         # If true, the resulting variables are set as trainable
@@ -88,7 +91,7 @@ class Network(object):
 
     def get_output_second2last(self):
         '''Return the output of the second to the last layer'''
-        return self.terminals[-2]
+        return self.layer_inputs
 
     def get_layer_output(self, layer_name):
         '''Return the output of specified layer by layer name'''
