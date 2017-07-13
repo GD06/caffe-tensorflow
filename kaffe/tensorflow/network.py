@@ -86,6 +86,10 @@ class Network(object):
         '''Returns the current network output.'''
         return self.terminals[-1]
 
+    def get_output_second2last(self):
+        '''Return the output of the second to the last layer'''
+        return self.terminals[-2]
+
     def get_layer_output(self, layer_name):
         '''Return the output of specified layer by layer name'''
         return self.layers[layer_name]
