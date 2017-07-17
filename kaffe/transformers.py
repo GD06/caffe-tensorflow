@@ -76,7 +76,8 @@ class DataInjector(object):
         if node.kind == NodeKind.InnerProduct:
             squeeze_indices.append(0)  # Squeeze FC.
         for idx in squeeze_indices:
-            data[idx] = np.squeeze(data[idx])
+            if idx < len(data):
+                data[idx] = np.squeeze(data[idx])
         return data
 
     def __call__(self, graph):
@@ -237,6 +238,9 @@ class BatchNormPreprocessor(object):
             assert node.data is not None
             assert len(node.data) == 3
             mean, variance, scale = node.data
+            mean = np.squeeze(mean)
+            variance = np.squeeze(variance)
+            scale = np.squeeze(scale)
             # Prescale the stats
             scaling_factor = 1.0 / scale if scale != 0 else 0
             mean *= scaling_factor
