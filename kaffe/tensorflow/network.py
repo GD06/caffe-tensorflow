@@ -231,21 +231,35 @@ class Network(object):
         # NOTE: Currently, only inference is supported
         with tf.variable_scope(name) as scope:
             shape = [input.get_shape()[-1]]
-            if scale_offset:
-                scale = self.make_var('scale', shape=shape)
-                offset = self.make_var('offset', shape=shape)
+            if self.trainable:
+                # make vars so graph loader can work
+                self.make_var('scale', shape=shape)
+                self.make_var('offset', shape=shape)
+                self.make_var('mean', shape=shape)
+                self.make_var('variance', shape=shape)
+
+                output = tf.contrib.layers.batch_norm(
+                    input,
+                    center=scale_offset,
+                    scale=scale_offset,
+                    is_training=True, fused=False)
             else:
-                scale, offset = (None, None)
-            output = tf.nn.batch_normalization(
-                input,
-                mean=self.make_var('mean', shape=shape),
-                variance=self.make_var('variance', shape=shape),
-                offset=offset,
-                scale=scale,
-                # TODO: This is the default Caffe batch norm eps
-                # Get the actual eps from parameters
-                variance_epsilon=1e-5,
-                name=name)
+                if scale_offset:
+                    scale = self.make_var('scale', shape=shape)
+                    offset = self.make_var('offset', shape=shape)
+                else:
+                    scale, offset = (None, None)
+                output = tf.nn.batch_normalization(
+                    input,
+                    mean=self.make_var('mean', shape=shape),
+                    variance=self.make_var('variance', shape=shape),
+                    offset=offset,
+                    scale=scale,
+                    # TODO: This is the default Caffe batch norm eps
+                    # Get the actual eps from parameters
+                    variance_epsilon=1e-5,
+                    name=name)
+
             if relu:
                 output = tf.nn.relu(output)
             return output
