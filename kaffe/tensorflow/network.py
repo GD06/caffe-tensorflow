@@ -65,6 +65,7 @@ class Network(object):
                 for param_name, data in data_dict[op_name].items():
                     try:
                         var = tf.get_variable(param_name)
+                        data = np.reshape(data, var.shape)
                         session.run(var.assign(data))
                     except ValueError:
                         if not ignore_missing:
