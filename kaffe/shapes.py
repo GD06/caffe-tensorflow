@@ -75,7 +75,7 @@ def shape_convolution(node):
 
 
 def shape_pool(node):
-    return get_strided_kernel_output_shape(node, math.ceil)
+    return get_strided_kernel_output_shape(node, math.floor)
 
 
 def shape_inner_product(node):
