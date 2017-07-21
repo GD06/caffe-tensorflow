@@ -6,7 +6,7 @@ import numpy as np
 import argparse
 from kaffe import KaffeError, print_stderr
 from kaffe.tensorflow import TensorFlowTransformer
-
+from kaffe.theano import TheanoTransformer
 
 def fatal_error(msg):
     print_stderr(msg)
@@ -22,9 +22,18 @@ def validate_arguments(args):
         fatal_error('No output path specified.')
 
 
-def convert(def_path, caffemodel_path, data_output_path, code_output_path, phase):
+def convert(def_path, caffemodel_path, data_output_path, code_output_path,
+            phase, framework):
     try:
-        transformer = TensorFlowTransformer(def_path, caffemodel_path, phase=phase)
+        if framework == 'tensorflow':
+            transformer = TensorFlowTransformer(def_path, caffemodel_path,
+                                                phase=phase)
+        elif framework == 'theno':
+            transformer = TheanoTransformer(def_path, caffemodel_path,
+                                            phase=phase)
+        else:
+            raise NotImplementedError('Not implemented target to convert')
+
         print_stderr('Converting data...')
         if caffemodel_path is not None:
             data = transformer.transform_data()
@@ -38,6 +47,8 @@ def convert(def_path, caffemodel_path, data_output_path, code_output_path, phase
         print_stderr('Done.')
     except KaffeError as err:
         fatal_error('Error encountered: {}'.format(err))
+    except NotImplementedError as err:
+        raise
 
 
 def main():
@@ -50,10 +61,14 @@ def main():
                         '--phase',
                         default='test',
                         help='The phase to convert: test (default) or train')
+    parser.add_argument('-f',
+                        '--framework', default='tensorflow',
+                        choices=['tensorflow', 'theano'],
+                        help='The target framework to convert')
     args = parser.parse_args()
     validate_arguments(args)
     convert(args.def_path, args.caffemodel, args.data_output_path, args.code_output_path,
-            args.phase)
+            args.phase, args.framework)
 
 
 if __name__ == '__main__':
