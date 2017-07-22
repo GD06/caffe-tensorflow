@@ -64,7 +64,7 @@ class Network(object):
         '''Construct the network. '''
         raise NotImplementedError('Must be implemented by the subclass.')
 
-    def load(self, data_path, session, ignore_missing=False):
+    def load(self, data_path, ignore_missing=False):
         '''Load network weights.
         data_path: The path to the numpy-serialized network weights
         session: The current TensorFlow session
@@ -165,7 +165,7 @@ class Network(object):
             biases = theano.shared(biased_data)
             self.grad_params.append(biases)
             self.var_dict[name + "biases"] = biases
-            output = output + biases.dimshuffle('x', '0', 'x', 'x')
+            output = output + biases.dimshuffle('x', 0, 'x', 'x')
 
         if relu:
             output = T.nnet.relu(output)
