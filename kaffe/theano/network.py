@@ -154,8 +154,8 @@ class Network(object):
             output = convolve(input, kernel)
         else:
             c_i = T.shape(input)[1]
-            input_groups = T.split(input, [c_i // group] * group, 1)
-            kernel_groups = T.split(kernell, [c_o // group] * group, 0)
+            input_groups = T.split(input, [c_i // group] * group, group, 1)
+            kernel_groups = T.split(kernel, [c_o // group] * group, group, 0)
             output_groups = [convolve(i, k) for i, k in zip(input_groups,
                                                             kernel_groups)]
             output = T.concatenate(output_groups, 1)
