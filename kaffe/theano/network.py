@@ -76,6 +76,8 @@ class Network(object):
                 try:
                     name = op_name + param_name
                     shared_var = self.var_dict[name]
+                    if data.ndim > shared_var.ndim:
+                        data = np.squeeze(data)
                     shared_var.set_value(data)
                 except ValueError:
                     if not ignore_missing:
