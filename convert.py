@@ -28,7 +28,7 @@ def convert(def_path, caffemodel_path, data_output_path, code_output_path,
         if framework == 'tensorflow':
             transformer = TensorFlowTransformer(def_path, caffemodel_path,
                                                 phase=phase)
-        elif framework == 'theno':
+        elif framework == 'theano':
             transformer = TheanoTransformer(def_path, caffemodel_path,
                                             phase=phase)
         else:

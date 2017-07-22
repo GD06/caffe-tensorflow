@@ -143,7 +143,7 @@ class Network(object):
              biased=True):
 
         convolve = lambda i, k: T.nnet.conv2d(i, k, border_mode=(pad_h, pad_w),
-                                              subsample=(s_h, s_w)
+                                              subsample=(s_h, s_w),
                                               filter_flip=False)
         kernel_data = np.ones((c_o, 1, k_h, k_w), dtype=np.float32)
         kernel = theano.shared(kernel_data)
