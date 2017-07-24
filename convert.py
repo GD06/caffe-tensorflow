@@ -58,6 +58,8 @@ def convert(def_path, caffemodel_path, data_output_path, code_output_path,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('def_path', help='Model definition (.prototxt) path')
+    parser.add_argument('target', help='The target framework to convert',
+                        choices=['tensorflow', 'theano', 'tf_nchw'])
     parser.add_argument('--caffemodel', help='Model data (.caffemodel) path')
     parser.add_argument('--data-output-path', help='Converted data output path')
     parser.add_argument('--code-output-path', help='Save generated source to this path')
@@ -65,15 +67,11 @@ def main():
                         '--phase',
                         default='test',
                         help='The phase to convert: test (default) or train')
-    parser.add_argument('-f',
-                        '--framework', default='tensorflow',
-                        choices=['tensorflow', 'theano', 'tf_nchw'],
-                        help='The target framework to convert')
+
     args = parser.parse_args()
     validate_arguments(args)
     convert(args.def_path, args.caffemodel, args.data_output_path, args.code_output_path,
-            args.phase, args.framework)
-
+            args.phase, args.target)
 
 if __name__ == '__main__':
     main()
