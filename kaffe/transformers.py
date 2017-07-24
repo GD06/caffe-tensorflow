@@ -129,22 +129,17 @@ class DataReshaper(object):
 
             if ((node.kind == NodeKind.InnerProduct) and
                     self.has_spatial_parent(node) and
-                    self.map(NodeKind.Convolution) != (0, 1, 2, 3)):
-                # Note: FC layer connected to the spatial layer needs to be
-                # re-wired to match the new spatial ordering
-                # Note added: the new sptial ordering is totally unrelated to
-                # the ordering of convolution params. Therefore, the following
-                # code is only a special case can work for the TensorFlow
+                    ('FCSpatialConversion' in self.mapping)):
+
                 in_shape = node.get_only_parent().output_shape
                 fc_shape = weights.shape
                 output_channels = fc_shape[0]
                 weights = weights.reshape((output_channels, in_shape.channels, in_shape.height,
                                            in_shape.width))
-                weights = weights.transpose(self.map(NodeKind.Convolution))
-                node.reshaped_data = weights.reshape(fc_shape[transpose_order[0]],
-                                                     fc_shape[transpose_order[1]])
-            else:
-                node.reshaped_data = weights.transpose(transpose_order)
+                weights = weights.transpose(self.mapping['FCSpatialConversion'])
+                weights = weights.reshape((output_channels, -1))
+
+            node.reshaped_data = weights.transpose(transpose_order)
 
         if self.replace:
             for node in graph.nodes:

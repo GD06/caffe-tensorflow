@@ -269,7 +269,9 @@ class TheanoTransformer(object):
                     NodeKind.Convolution: (0, 1, 2, 3),
 
                     # (c_o, c_i) -> (c_i, c_o)
-                    NodeKind.InnerProduct: (1, 0)
+                    NodeKind.InnerProduct: (1, 0),
+
+                    'FCSpatialConversion': (0, 1, 2, 3)
                 }),
 
                 # Pre-process batch normalization data

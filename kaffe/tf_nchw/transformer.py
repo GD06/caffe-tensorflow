@@ -178,7 +178,7 @@ class TensorFlowEmitter(object):
         return self.prefix + s + '\n'
 
     def emit_imports(self):
-        return self.statement('from kaffe.tensorflow import Network\n')
+        return self.statement('from kaffe.tf_nchw import Network\n')
 
     def emit_class_def(self, name):
         return self.statement('class %s(Network):' % (name))
@@ -213,7 +213,7 @@ class TensorFlowEmitter(object):
         return s
 
 
-class TensorFlowTransformer(object):
+class TF_NCHW_Transformer(object):
 
     def __init__(self, def_path, data_path, verbose=True, phase='test'):
         self.verbose = verbose
@@ -265,7 +265,7 @@ class TensorFlowTransformer(object):
                     # (c_o, c_i) -> (c_i, c_o)
                     NodeKind.InnerProduct: (1, 0),
 
-                    'FCSpatialConversion': (0, 2, 3, 1)
+                    'FCSpatialConversion': (0, 1, 2, 3)
                 }),
 
                 # Pre-process batch normalization data

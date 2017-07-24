@@ -5,8 +5,6 @@ import sys
 import numpy as np
 import argparse
 from kaffe import KaffeError, print_stderr
-from kaffe.tensorflow import TensorFlowTransformer
-from kaffe.theano import TheanoTransformer
 
 def fatal_error(msg):
     print_stderr(msg)
@@ -26,11 +24,17 @@ def convert(def_path, caffemodel_path, data_output_path, code_output_path,
             phase, framework):
     try:
         if framework == 'tensorflow':
+            from kaffe.tensorflow import TensorFlowTransformer
             transformer = TensorFlowTransformer(def_path, caffemodel_path,
                                                 phase=phase)
         elif framework == 'theano':
+            from kaffe.theano import TheanoTransformer
             transformer = TheanoTransformer(def_path, caffemodel_path,
                                             phase=phase)
+        elif framework == 'tf_nchw':
+            from kaffe.tf_nchw import TF_NCHW_Transformer
+            transformer = TF_NCHW_Transformer(def_path, caffemodel_path,
+                                              phase=phase)
         else:
             raise NotImplementedError('Not implemented target to convert')
 
@@ -63,7 +67,7 @@ def main():
                         help='The phase to convert: test (default) or train')
     parser.add_argument('-f',
                         '--framework', default='tensorflow',
-                        choices=['tensorflow', 'theano'],
+                        choices=['tensorflow', 'theano', 'tf_nchw'],
                         help='The target framework to convert')
     args = parser.parse_args()
     validate_arguments(args)
